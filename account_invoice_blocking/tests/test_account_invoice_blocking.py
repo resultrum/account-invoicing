@@ -71,12 +71,6 @@ class TestAccountInvoiceBlocking(TransactionCase):
             'journal_id': self.journal.id,
             'invoice_line_ids': [(4, self.invoice_line.id)]})
 
-    def get_blocked_invoices(self):
-        return self.account_invoice.search([('blocked', '=', True)])
-
-    def get_not_blocked_invoices(self):
-        return self.account_invoice.search([('blocked', '=', False)])
-
     def test_invoice(self):
         self.account_invoice.search([('id', '=', self.invoice.id)])
         self.invoice.draft_blocked = True
@@ -103,26 +97,3 @@ class TestAccountInvoiceBlocking(TransactionCase):
                                                          self.invoice.id)])
             self.assertEqual(self.invoice.blocked, move_line[0].blocked,
                              'Blocked values are not equals')
-
-    def test_search_blocked_invoice(self):
-        inv = self.invoice
-
-        inv.draft_blocked = True
-        blocked_invoices = self.get_blocked_invoices()
-        self.assertTrue(inv in blocked_invoices)
-        not_blocked_invoices = self.get_not_blocked_invoices()
-        self.assertTrue(inv not in not_blocked_invoices)
-
-        inv.draft_blocked = False
-        blocked_invoices = self.get_blocked_invoices()
-        self.assertTrue(inv not in blocked_invoices)
-        not_blocked_invoices = self.get_not_blocked_invoices()
-        self.assertTrue(inv in not_blocked_invoices)
-
-        inv.action_invoice_open()
-        inv.blocked = True
-
-        blocked_invoices = self.get_blocked_invoices()
-        self.assertTrue(inv in blocked_invoices)
-        not_blocked_invoices = self.get_not_blocked_invoices()
-        self.assertTrue(inv not in not_blocked_invoices)

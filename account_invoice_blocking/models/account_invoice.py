@@ -77,24 +77,8 @@ class AccountInvoice(models.Model):
         string='No Follow-up',
         states={'draft': [('readonly', True)]},
         compute='_get_move_blocked',
-        inverse='_set_move_blocked',
-        search='_search_blocked'
-    )
+        inverse='_set_move_blocked')
 
     draft_blocked = fields.Boolean(
         string='No Follow-up',
-        help="This flag facilitates the blocking of the invoice's move lines.",
-    )
-
-    @api.model
-    def _search_blocked(self, operator, value):
-        domain = [
-            '|',
-            '&',
-            ('move_id', '!=', False),
-            ('move_id.line_ids.blocked', operator, value),
-            '&',
-            ('move_id', '=', False),
-            ('draft_blocked', operator, value)
-        ]
-        return domain
+        help="This flag facilitates the blocking of the invoice's move lines.")
