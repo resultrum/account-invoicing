@@ -87,15 +87,6 @@ class AccountInvoice(models.Model):
     )
 
     @api.model
-    def fields_get(self, allfields=None, attributes=None):
-        res = super(AccountInvoice, self).fields_get(
-            allfields=allfields, attributes=attributes)
-        # Remove the draft blocked field from the custom search view
-        if 'draft_blocked' in res:
-            res['draft_blocked']['searchable'] = False
-        return res
-
-    @api.model
     def _search_blocked(self, operator, value):
         domain = [
             '|',
